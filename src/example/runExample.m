@@ -21,7 +21,7 @@
 %     L     - Cholesky factor
 %     Ueval - estimated precision matrix
 %
-% Author: Vladisav Jelisavcic
+% Author: Vladisav Jelisavcic, Ivan Stojkovic
 % Work address
 % email: 
 % Website: 
