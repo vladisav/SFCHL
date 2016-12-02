@@ -121,7 +121,12 @@ tic
 %% ------ OPTIMIZATION ----
 
 % Main optimization procedure.
-[L,iterations, dL] = SFCHL(Y, L, lambda, numIterations, dLthreshold, activeSet); 
+if (~isOctave && Params.poolSize > 0)  % Note: parfor doesn't work on Octave. 
+    [L,iterations, dL] = SFCHLpar(Y, L, lambda, numIterations, dLthreshold, activeSet); 
+else
+    [L,iterations, dL] = SFCHL(Y, L, lambda, numIterations, dLthreshold, activeSet); 
+end;
+
 
 % Time spent doing coordinate descent.
 elapsedTime = toc;
