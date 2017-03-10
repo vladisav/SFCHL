@@ -1,8 +1,9 @@
-function [L, iterations, dL] = SFCHL(y, L, lambda, numIterations, dLthreshold, activeSet, options)
-%SFCHL main optimization function for fast scale free GMRF learning package.
+function [L, iterations, dL] = SNETCHpar(y, L, lambda, numIterations, dLthreshold, activeSet, options)
+%SNETCHpar main optimization function for fast scale free GMRF learning package 
+% optimized for running on Matlab Parallel Computing Toolbox.
 %
 % 
-% Syntax:  [L, iterations, dL] = SFCHL(y, L, lambda, numIterations, dLthreshold, activeSet, options)
+% Syntax:  [L, iterations, dL] = SNETCHpar(y, L, lambda, numIterations, dLthreshold, activeSet, options)
 %
 % Inputs:
 %    y              - m \times n data vector, where m is number of samples, and n is number of variables
@@ -31,13 +32,13 @@ function [L, iterations, dL] = SFCHL(y, L, lambda, numIterations, dLthreshold, a
 % Subfunctions: none
 % MAT-files required: none
 %
-% See also: 
+% See also: SNETCH
 
 % Author: Vladisav Jelisavcic
 % Work address
 % email: 
 % Website: 
-% July 2016; Last revision: 20-July-2016
+% July 2016; Last revision: 1-Feb-2016
 
 
 if ~exist('numIterations','var'), numIterations = 100; end
@@ -83,15 +84,13 @@ if(verbosity > 0)
     disp('Starting main optimization function ...');
 end;
 
+initialActiveSet = activeSet{1};
 
 % Start tracking time.
 tic
 
-% Counter used for displaying information.
-counter = 0;
-
 % Iterate over each column.
-for j=1:N
+parfor j=1:N
       % Column of the Choleksy factor to be optimized.
       X = L(:,j);
 
@@ -99,7 +98,7 @@ for j=1:N
       thresholdIndex = 1;
 
       % Find active rows. 
-      activeRows = find(activeSet{1}(:,j));
+      activeRows = find(initialActiveSet(:,j));
       
       % L is always triangular matrix.
       activeRows = activeRows(activeRows>=j);
@@ -195,8 +194,8 @@ for j=1:N
       iterations(j) = k;
       
       if(verbosity > 0 && mod(j,options.display) == 0)
-          counter = counter + 1;
-          disp(['Finished column: ' num2str(j) '(' num2str(counter) '/' num2str(N/options.display) '), average num iterations ' num2str(sum(iterations)/j) '.']); 
+
+          disp(['Finished column: ' num2str(j) '.']); 
       end;
       
       if (isOctave)

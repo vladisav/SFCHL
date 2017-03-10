@@ -1,6 +1,6 @@
 %% Example script to run sparse scale free cholesky estimation.
 % 
-% This script demonstrates how to run SFCHL code. 
+% This script demonstrates how to run SNETCH code. 
 % As a resut, a precision matrix is estimated from data, along with sparse Cholesky factors. 
 % Several evaluation metrics (Jaccard index, precision, recall) are printed to stdout.
 %
@@ -25,13 +25,13 @@
 % Work address
 % email: 
 % Website: 
-% July 2016; Last revision: 20-July-2016
+% July 2016; Last revision: 1-Feb-2016
 
 % Check for compatibility.
 isOctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
 
 % Model name.
-modelName = 'SFCHL';
+modelName = 'SNETCH';
 
 % Name of the .mat file containing the dataset.
 datasetName = 'scalefree2K';
@@ -64,7 +64,7 @@ Params.poolSize = 0;
 
 % Add dataset and common files to path
 parentpath = cd(cd('..'));
-addpath(parentpath, [parentpath '/SFCHL']);
+addpath(parentpath, [parentpath '/SNETCH']);
 
 % Load dataset
 load([dataPath '.mat']);
@@ -122,9 +122,9 @@ tic
 
 % Main optimization procedure.
 if (~isOctave && Params.poolSize > 0)  % Note: parfor doesn't work on Octave. 
-    [L,iterations, dL] = SFCHLpar(Y, L, lambda, numIterations, dLthreshold, activeSet); 
+    [L,iterations, dL] = SNETCHpar(Y, L, lambda, numIterations, dLthreshold, activeSet); 
 else
-    [L,iterations, dL] = SFCHL(Y, L, lambda, numIterations, dLthreshold, activeSet); 
+    [L,iterations, dL] = SNETCH(Y, L, lambda, numIterations, dLthreshold, activeSet); 
 end;
 
 
@@ -148,4 +148,4 @@ if (~isOctave && Params.poolSize > 0)
 end;
 
 rmpath(parentpath);
-rmpath([parentpath '/SFCHL']);
+rmpath([parentpath '/SNETCH']);
